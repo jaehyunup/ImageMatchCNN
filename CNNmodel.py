@@ -17,12 +17,7 @@ def shuffling(features,labels):
     y_data = list(y_data)
     return np.array(x_data),np.array(y_data)
 
-'''
-rotateGenerator = ImageDataGenerator(rotation_range=40, fill_mode='nearest',rescale=1./255)
-shiftGenerator = ImageDataGenerator(width_shift_range=0.3, height_shift_range=0.3, fill_mode='nearest',rescale=1./255)
-shearGenerator = ImageDataGenerator(shear_range=30, fill_mode='nearest',rescale=1./255)
-zoomGenerator = ImageDataGenerator( zoom_range=[-0.1,0.1], fill_mode='nearest',rescale=1./255)
-'''
+
 rotateGenerator = ImageDataGenerator(rotation_range=40, fill_mode='nearest')
 shiftGenerator = ImageDataGenerator(width_shift_range=0.3, height_shift_range=0.3, fill_mode='nearest')
 shearGenerator = ImageDataGenerator(shear_range=30, fill_mode='nearest')
@@ -47,33 +42,34 @@ for file_image in filename_in_dir:
     img = load_img(file_image,color_mode='grayscale')
     x = img_to_array(img)
     x = x.reshape((1,) + x.shape)
+    Dataset.append(np.array(x.ravel() / 255.0))
     i1,i2,i3,i4=0,0,0,0
     if genetype== 1 :
         for batch in rotateGenerator.flow(x):
             i1 +=1
             Dataset.append(np.array(batch.ravel()/255.0))
-            if i1> genenum:
+            if i1> genenum-1:
                 i1=0
                 break
     if genetype == 2:
         for batch in shearGenerator.flow(x):
             i2 += 1
             Dataset.append(np.array(batch.ravel()/255.0))
-            if i2 > genenum:
+            if i2 > genenum-1:
                 i2 = 0
                 break
     if genetype == 3:
         for batch in shiftGenerator.flow(x):
             i3 += 1
             Dataset.append(np.array(batch.ravel()/255.0))
-            if i3 > genenum:
+            if i3 > genenum-1:
                 i3 = 0
                 break
     if genetype == 4:
         for batch in zoomGenerator.flow(x):
             i4 += 1
             Dataset.append(np.array(batch.ravel()/255.0))
-            if i4 > genenum:
+            if i4 > genenum-1:
                 i4 = 0
                 break
 
@@ -87,6 +83,7 @@ for et in range (0,1440):
     cv2.imshow("hey",Dataset[et])
     X_data.append(Dataset[et])
     print(len(X_data))
+
 
 # read label in Y_data
 label_File = open("img_data\\label.txt","r")
@@ -102,7 +99,7 @@ for i in range(0,len(Y_data)):
             Y_label.append([0.0, 1.0])
 #finishd DataSet Setting
 
-
+print("Y라벨 개수",len(Y_label))
 
 Y_label = np.array(Y_label)
 train_features = X_data[0:int(0.8*len(X_data))] # 특징 개수( 이미지 개수) * 0.8
