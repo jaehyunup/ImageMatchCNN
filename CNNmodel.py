@@ -80,7 +80,6 @@ filename_list=[] # 파일 이름 리스트 (0~143) 프레임당 10개씩
 
 for et in range (0,1440):
     Dataset[et]=Dataset[et].reshape(80,80,1)
-    cv2.imshow("hey",Dataset[et])
     X_data.append(Dataset[et])
     print(len(X_data))
 
@@ -171,7 +170,7 @@ init = tf.group(tf.global_variables_initializer(),tf.local_variables_initializer
 merged = tf.summary.merge_all()
 train_writer = tf.summary.FileWriter('./train',sess.graph)
 sess.run(init)
-for epoch in range(200):
+for epoch in range(300):
     #sp_train_features, sp_train_labels= shuffling(train_features,train_labels)
     summary, _,cost_val = sess.run([merged,optimizer, cost], feed_dict={X: train_features, Y: train_labels, keep_prob: 0.7})
     # 트레이닝 과정의 cost_val 변화
